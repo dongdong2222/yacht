@@ -19,6 +19,7 @@ class _Subject {
 
 class Player extends _Observer{ //observer
     constructor(name){
+        super()
         this.name = name;
     }
     name; //player 이름 수시로 바꿀수 있게
@@ -30,7 +31,7 @@ class Player extends _Observer{ //observer
 
 class Dice extends _Observer{
     constructor(){
-
+        super();
     }
     currentNum; //현재 주사위의 수
     fakeNum; //그림상 주사위의 수 던졌을 때랑 상관없는 수 즉, 던지기 전 수
@@ -43,19 +44,49 @@ class Dice extends _Observer{
     }
 }
 
-class PalyerList extends _Subject{ //player들과 옵저버 관계
-    playerList; //총 player들을 저장해놓음 subject
+class PlayerList extends _Subject{ //player들과 옵저버 관계
+    constructor() {
+        super();
+    }
+    playerList = []; //총 player들을 저장해놓음 subject
     checkedPlayer; //이번에 게임에 참여할 player들
 
-    addPlayer(){ //player 추가
+    registObserver(ob){ //player 추가
+        this.playerList.push(ob);
+    }
+    deleteObserver(ob){ //player 삭제
+        for(var i=0;i<this.playerList.length;i++){
+            if(this.playerList[i] = ob)
+                this.playerList.splice(i,1);
+        }
+    }
+    notifyObserver () { // player들의 랭킹 업데이트
+        for(var i=0;i<this.playerList.length;i++){
+            this.playerList[i].update();
+        }
+    }
+    makePlayerTable() {
+        var playerForm = document.getElementById("playerList");
+        var userTable = document.createElement("table");
+        userTable.setAttribute("class", "playerTable");
+        for(var i=0;i<this.playerList.length; i++){
+            console.log("lol");
+            var row = document.createElement("tr");
+            var player = document.createElement("td");
+            player.innerText = this.playerList[i].name;
+            row.appendChild(player);
+            userTable.appendChild(row);
+        }
+        playerForm.appendChild(userTable);
 
     }
-    deletePlayer() { //player 삭제
 
-    }
 }
 
 class Board extends _Subject{ //dice, player 와 옵저버 관계
+    constructor() {
+        super();
+    }
     dices;
     currentPlayer; //현재 턴인 player
     turn; // 현재 라운드 총 13라운드
@@ -66,3 +97,9 @@ class Board extends _Subject{ //dice, player 와 옵저버 관계
 class ScoreBoard {
 
 }
+
+var player = new Player("Dong Ju");
+var List = new PlayerList();
+List.registObserver(player);
+console.log(List.playerList);
+List.makePlayerTable();
